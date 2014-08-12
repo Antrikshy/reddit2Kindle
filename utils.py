@@ -17,16 +17,14 @@ class entryData(object):
         self.title = title
         self.content = content        
 
-    def setHTML(self, HTMLString):
-        self.HTML = HTMLString
 
-    # def getters
 
 '''Gets content to put into magazine from reddit and returns a list of entryData objects corresponding to each submission.'''
 def getContent(pickedSubreddit, timePeriod, number):
     # This is where the submissions will go
     stories = None
 
+    print "Getting requested top posts from " + str(pickedSubreddit)
     # Get top submissions based on user-defined time period
     if timePeriod == 'hour':
         stories = pickedSubreddit.get_top_from_hour(limit = number)
@@ -44,7 +42,10 @@ def getContent(pickedSubreddit, timePeriod, number):
     # This is where a series of entryData objects will go
     dataForEntries = []
     # Create each entryData and append to above list
+    storyNumber = 1
     for story in stories:
+        print "Getting story #" + str(storyNumber) + "..."
+
         storyData = entryData(vars(story)['id'])
         
         author = str(vars(story)['author'])
@@ -54,17 +55,38 @@ def getContent(pickedSubreddit, timePeriod, number):
         storyData.setEntryData(author, title, content)
 
         dataForEntries.append(storyData)
-
+        storyNumber += 1
     # Return list with data
     return dataForEntries
 
 def convertToHTML(dataForEntries):
+    print "Doing some text decoding/converting magic..."
+
     unescape = HTMLParser.HTMLParser().unescape
 
     for data in dataForEntries:
         unescapedText = unescape(data.content)
         convertedToHTML = markdown2.markdown(unescapedText)
         
-        data.setHTML(convertedToHTML)
+        data.HTML = convertedToHTML
 
     return dataForEntries
+
+def convertToFinalHTML(dataWithHTMLContent):
+    print "Creating HTML versions of posts..."
+
+    storyNumber = 1
+    for data in dataWithHTMLContent:
+        print "HTMLifying story #" + str(storyNumber) + "..."
+
+        HTMLHead = '<?xml version="1.0" encoding="UTF-8" ?>\n<head><meta charset=UTF-8" ></head>'
+        titleH1 = '<h1>' + data.title + '</h1>\n\n'
+        linkToOriginal = '<em>Original post: <a href="http://redd.it/' + str(data.ID) + '">redd.it/' + str(data.ID) + '</a></em>\n'
+        authorEm = '<em>by /u/' + data.author + '</em><br/>'
+
+        prettyHTMLContent = HTMLHead + '<body>' + titleH1 + linkToOriginal + '<br/>' + authorEm + '\n\n' + data.HTML + '</body>'
+        data.HTML = prettyHTMLContent
+
+        storyNumber += 1
+
+    return dataWithHTMLContent
