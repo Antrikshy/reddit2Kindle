@@ -1,9 +1,15 @@
-import praw
+import praw, argparse, os
 import utils
 
-subreddit = 'talesfromtechsupport'
-timePeriod = 'week'
-number = 5
+parser = argparse.ArgumentParser(description="Compiles requested number of top posts from specified subreddit into a Kindle book")
+parser.add_argument('subreddit', help="Subreddit you want to scan", type=str)
+parser.add_argument('time', help="Top posts from hour/day/week/month/year", type=str)
+parser.add_argument('number', help="Number of top posts to scan", type=int)
+args = parser.parse_args()
+
+subreddit = args.subreddit
+timePeriod = args.time
+number = args.number
 
 # In this case, we use PRAW without logging into reddit
 print "Connecting to reddit..."
@@ -24,7 +30,9 @@ for readyEntry in finalEntriesInHTML:
     finalHTML = finalHTML + readyEntry.HTML.encode("utf8") + "<mbp:pagebreak />"
 
 print "Writing HTML version of book..."
-fp = open("HTMLTest.htm", "w")
+# Write to 'File To Convert.htm' in the current directory
+fp = open(os.getcwd() + "/File To Convert.htm", "w")
 fp.write(finalHTML)
 fp.close()
 print "HTML version ready!"
+print "Find 'File To Convert.htm' in your current working directory and convert it to .mobi using KindleGen from Amazon."
