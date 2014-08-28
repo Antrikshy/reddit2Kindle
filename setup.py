@@ -3,7 +3,7 @@ from distutils.core import setup
 setup (
     name = 'reddit-to-Kindle',
     packages = ['reddit-to-Kindle'],
-    version = '1.0.0',
+    version = '0.8.0',
     author = 'Antriksh Yadav',
     author_email = 'antrikshy@gmail.com',
     url = 'http://www.github.com/Antrikshy/reddit-to-Kindle',
@@ -16,8 +16,8 @@ setup (
     classifiers = ['Operating System :: OS Independent',
                    'Programming Language :: Python',
                    'Topic :: Utilities',
-                   'Development Status :: Production/Stable'
+                   'Development Status :: 4 - Beta'
                    'Intended Audience :: End Users/Desktop',
                    'Natural Language :: English',
-                   'License :: OSI Approved']
+                   'License :: OSI Approved :: MIT License']
 )

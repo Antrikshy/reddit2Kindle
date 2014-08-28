@@ -30,9 +30,9 @@ for readyEntry in finalEntriesInHTML:
     finalHTML = finalHTML + readyEntry.HTML.encode("utf8") + "<mbp:pagebreak />"
 
 print "Writing HTML version of book..."
-# Write to 'File To Convert.htm' in the current directory
-fp = open(os.getcwd() + "/File To Convert.htm", "w")
+# Write to 'FileToConvert.htm' in the current directory
+fp = open(os.getcwd() + "/FileToConvert.htm", "w")
 fp.write(finalHTML)
 fp.close()
 print "HTML version ready!"
-print "Find 'File To Convert.htm' in your current working directory and convert it to .mobi using KindleGen from Amazon."
+print "Find 'FileToConvert.htm' in your current working directory and convert it to .mobi using KindleGen from Amazon."
