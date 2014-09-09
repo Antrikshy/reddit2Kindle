@@ -5,26 +5,33 @@ reddit2Kindle (beta)
 
 Conveniently compiles text posts from reddit into a .mobi book, readable by all Kindle devices and apps.
 
-Now you can read long text posts from /r/talesfromtechsupport, /r/talesfromretail, /r/tifu or a story-based subreddit of your choice with the comfort of your e-reader.
+Now you can read long text posts from [/r/talesfromtechsupport](http://reddit.com/r/talesfromtechsupport), [/r/nosleep](http://reddit.com/r/nosleep), [/r/tifu](http://reddit.com/r/tifu) or a story-based subreddit of your choice with the comfort of your e-reader.
+
+Installation
+------------
+1. Install [Python](https://www.python.org/downloads) and [pip](http://pip.readthedocs.org/en/latest/installing.html).
+2. Install r2K using `pip install reddit2Kindle`.
+3. Download and place the [KindleGen](http://www.amazon.com/gp/feature.html/?ie=UTF8&camp=1789&creative=390957&docId=1000765211&linkCode=ur2&pf_rd_i=1000729511&pf_rd_m=ATVPDKIKX0DER&pf_rd_p=1343256962&pf_rd_r=1PVPS0HAD6ZBTADSD8SA&pf_rd_s=center-6&pf_rd_t=1401&tag=rinointe-20&linkId=3VCDXGTPPQQH3TX5) executable from Amazon into the directory that you will use to compile your book. This will automate conversion to the Kindle format.
+
+Windows users should be able to install using the .exe installer in the `dist` folder instead of pip. I have not tested this myself yet.
+
+**Suggested setup:** Create a folder dedicated to creating Kindle compilations in your Documents folder (or elsewhere). Place a copy of the KindleGen executable in here permanently. Always `cd` to this folder to create books.
 
 Usage
 -----
-1. Install using `pip install reddit2Kindle`.
-2. `cd` to a directory of your choice (this is where the HTML file will be generated).
-3. Download and place the [KindleGen](http://www.amazon.com/gp/feature.html/?ie=UTF8&camp=1789&creative=390957&docId=1000765211&linkCode=ur2&pf_rd_i=1000729511&pf_rd_m=ATVPDKIKX0DER&pf_rd_p=1343256962&pf_rd_r=1PVPS0HAD6ZBTADSD8SA&pf_rd_s=center-6&pf_rd_t=1401&tag=rinointe-20&linkId=3VCDXGTPPQQH3TX5) executable from Amazon into the current directory to automate conversion to .mobi OR convert the .htm result manually.
-4. Use `reddit2Kindle talesfromtechsupport month 15` or similar, which compiles the top 15 stories of the month from /r/talesfromtechsupport.
+1. `cd` to a directory of your choice (this is where the HTML file will be generated). Make sure KindleGen is present in this folder if you want to automate conversion to the .mobi format.
+2. Use `reddit2Kindle talesfromtechsupport month 15` or similar, which compiles the top 15 stories of the month from /r/talesfromtechsupport.
+3. Transfer this file to your Kindle device or app using a USB cable, or Amazon's email service.
 
 You can pick any public subreddit. Only top posts can be compiled. Time period can be hour, day, week, month or year.
 
 You can also use this program, in part or otherwise, in your own creations as long as it is attributed properly. It's MIT-licensed. Simply download the .tar.gz source distribution package from the `/dist` folder.
 
-Converting to .mobi
--------------------
-Amazon has a command line tool called [KindleGen](http://www.amazon.com/gp/feature.html/?ie=UTF8&camp=1789&creative=390957&docId=1000765211&linkCode=ur2&pf_rd_i=1000729511&pf_rd_m=ATVPDKIKX0DER&pf_rd_p=1343256962&pf_rd_r=1PVPS0HAD6ZBTADSD8SA&pf_rd_s=center-6&pf_rd_t=1401&tag=rinointe-20&linkId=3VCDXGTPPQQH3TX5), which quickly and painlessly convert some file formats for Kindle.
+KindleGen
+---------
+Amazon has a command line tool called [KindleGen](http://www.amazon.com/gp/feature.html/?ie=UTF8&camp=1789&creative=390957&docId=1000765211&linkCode=ur2&pf_rd_i=1000729511&pf_rd_m=ATVPDKIKX0DER&pf_rd_p=1343256962&pf_rd_r=1PVPS0HAD6ZBTADSD8SA&pf_rd_s=center-6&pf_rd_t=1401&tag=rinointe-20&linkId=3VCDXGTPPQQH3TX5), which quickly and painlessly converts several file formats to a Kindle-friendly format.
 
-Due to licensing reasons, I cannot include a copy of KindleGen and automate the entire process. But you can download it yourself. Just place this executable into the directory you are working in. r2K will automatically create a .mobi file. You can simply transfer this file to your Kindle using Amazon's email service or by a USB cable.
-
-If KindleGen is not found in the current directory at runtime, an HTML file is created. This can be manually converted to .mobi using KindleGen, Calibre or some other solution.
+Due to licensing reasons, I cannot include a copy of KindleGen and automate the entire process. But you can download it yourself. Just place this executable into the directory you are working in. r2K will automatically create a .mobi file. If KindleGen is not found in the current directory at runtime, an HTML file is created. This can be manually converted to .mobi using KindleGen, Calibre or some other solution.
 
 Donate
 ------
