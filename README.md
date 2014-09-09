@@ -9,7 +9,7 @@ Now you can read long text posts from /r/talesfromtechsupport, /r/talesfromretai
 
 Usage
 -----
-1. Install using `pip install reddit2Kindle`. *<- should work soon*
+1. Install using `pip install reddit2Kindle`.
 2. `cd` to a directory of your choice (this is where the HTML file will be generated).
 3. Download and place the [KindleGen](http://www.amazon.com/gp/feature.html/?ie=UTF8&camp=1789&creative=390957&docId=1000765211&linkCode=ur2&pf_rd_i=1000729511&pf_rd_m=ATVPDKIKX0DER&pf_rd_p=1343256962&pf_rd_r=1PVPS0HAD6ZBTADSD8SA&pf_rd_s=center-6&pf_rd_t=1401&tag=rinointe-20&linkId=3VCDXGTPPQQH3TX5) executable from Amazon into the current directory to automate conversion to .mobi OR convert the .htm result manually.
 4. Use `reddit2Kindle talesfromtechsupport month 15` or similar, which compiles the top 15 stories of the month from /r/talesfromtechsupport.
