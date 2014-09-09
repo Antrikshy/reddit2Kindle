@@ -22,7 +22,7 @@ Windows users should be able to install using the .exe installer in the `dist` f
 Usage
 -----
 1. `cd` to a directory of your choice (this is where the HTML file will be generated). Make sure KindleGen is present in this folder if you want to automate conversion to the .mobi format.
-2. Use `reddit2Kindle talesfromtechsupport month 15` or similar, which compiles the top 15 stories of the month from /r/talesfromtechsupport.
+2. Use `reddit2Kindle talesfromtechsupport 15 month` or similar, which compiles the top 15 stories of the month from /r/talesfromtechsupport.
 3. Transfer this file to your Kindle device or app using a USB cable, or Amazon's email service.
 
 You can pick any public subreddit. Only top posts can be compiled. Time period can be hour, day, week, month or year.
