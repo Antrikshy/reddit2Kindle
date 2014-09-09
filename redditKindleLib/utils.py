@@ -44,8 +44,6 @@ def getContent(pickedSubreddit, timePeriod, number):
     # Create each entryData and append to above list
     storyNumber = 1
     for story in stories:
-        print "Getting story #" + str(storyNumber) + "..."
-
         storyData = entryData(vars(story)['id'])
         
         author = str(vars(story)['author'])
@@ -60,7 +58,7 @@ def getContent(pickedSubreddit, timePeriod, number):
     return dataForEntries
 
 def convertToHTML(dataForEntries):
-    print "Doing some text decoding/converting magic..."
+    print "\nDoing some text decoding/conversion magic..."
 
     unescape = HTMLParser.HTMLParser().unescape
 
@@ -73,7 +71,7 @@ def convertToHTML(dataForEntries):
     return dataForEntries
 
 def convertToFinalHTML(dataWithHTMLContent):
-    print "Creating HTML versions of posts..."
+    print "Creating HTML versions of posts...\n"
 
     storyNumber = 1
     for data in dataWithHTMLContent:
