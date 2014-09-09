@@ -5,7 +5,9 @@ reddit2Kindle (beta)
 
 Conveniently compiles text posts from reddit into a .mobi book, readable by all Kindle devices and apps.
 
-Now you can read long text posts from [/r/talesfromtechsupport](http://reddit.com/r/talesfromtechsupport), [/r/nosleep](http://reddit.com/r/nosleep), [/r/tifu](http://reddit.com/r/tifu) or a story-based subreddit of your choice with the comfort of your e-reader.
+Now you can read long text posts from [/r/talesfromtechsupport](http://reddit.com/r/talesfromtechsupport), [/r/nosleep](http://reddit.com/r/nosleep), [/r/tifu](http://reddit.com/r/tifu) or a story-based subreddit of your choice with the comfort of your e-reader. Here's an example of what the auto-generated books look like:
+
+![Sample](http://i.imgur.com/sw6iMYX.png)
 
 Installation
 ------------
