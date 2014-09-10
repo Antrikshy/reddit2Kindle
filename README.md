@@ -48,6 +48,7 @@ Contributing code is super easy. Simply fork, clone and edit the r2K script and/
 
 **Things to do:**
 
+* **Fix Windows compatibility!**
 * Add a way to convert single posts from URL (should be _very_ easy)
 * Fix some encoding issues so the HTML converts cleanly using Amazon's email service (perhaps replace all Unicode characters)
 * Expand compatibility with other ebook formats (I don't know how well it converts at the moment)

@@ -55,8 +55,8 @@ if os.path.isfile('./kindlegen'):
     
     # Clean up HTML file and rename output
     print "Cleaning up..."
-    subprocess.call(['rm', 'r2K-result.htm'])
-    subprocess.call(['mv', 'r2K-result.mobi', 'r2K_' + str(subreddit) + '_' + timePeriod + today.strftime("_%d-%m-%Y") + '.mobi'])
+    os.remove('r2K-result.htm')
+    os.rename('r2K-result.mobi', 'r2K_' + str(subreddit) + '_' + timePeriod + today.strftime("_%d-%m-%Y") + '.mobi')
 
     print "Done!"
     print "Message /u/Antrikshy for help, bug reports or feedback."

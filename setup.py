@@ -4,7 +4,7 @@ setup (
     name = 'reddit2Kindle',
     scripts = ['r2K'],
     packages = ['redditKindleLib'],
-    version = '0.5.0',
+    version = '0.5.1',
     author = 'Antriksh Yadav',
     author_email = 'antrikshy@gmail.com',
     url = 'http://www.antrikshy.com/projects/reddit2Kindle.htm',
