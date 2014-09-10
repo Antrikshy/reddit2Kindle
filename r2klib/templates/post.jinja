@@ -3,6 +3,8 @@
 <h1>{{ p.title }}</h1>
 <em>Original post: <a href="http://redd.it/{{ p.id }}">{{ p.id }}</a></em>
 <br />
-<em>by /u/{{ p.author }}</em>
+{% if p.author != '[deleted]' %}
+<em>by <a href="http://reddit.com/u/{{ p.author }}">{{ p.author }}</a></em>
+{% endif %}
 <p>{{ markdown(p.selftext) }}</p>
 {% endmacro %}
