@@ -38,4 +38,6 @@ setup(
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License'
     ],
+    zip_safe=False,
+    include_package_data=True
 )
