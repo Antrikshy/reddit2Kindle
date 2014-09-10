@@ -6,7 +6,8 @@ setup(
     name='reddit2Kindle',
     scripts=['r2K'],
     install_requires=[
-        'markdown2'
+        'markdown2',
+        'praw'
     ],
     version='0.5.0',
     author='Antriksh Yadav',
