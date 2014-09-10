@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='reddit2Kindle',
+    name='reddit2kindle',
     entry_points={
         'console_scripts': [
             'r2k = r2klib.cli:from_cli'
@@ -19,13 +19,13 @@ setup(
     version='0.6.0',
     author='Antriksh Yadav',
     author_email='antrikshy@gmail.com',
-    url='http://www.antrikshy.com/projects/reddit2Kindle.htm',
+    url='http://www.antrikshy.com/projects/reddit2kindle.htm',
     description=(
         'Compiles top posts from a specified subreddit for a specified time'
         'period into a well-formatted Kindle book.'
     ),
     long_description=(
-        'See http://www.github.com/Antrikshy/reddit2Kindle for instructions.'
+        'See http://www.github.com/Antrikshy/reddit2kindle for instructions.'
         'Requires KindleGen from Amazon to convert HTML result to .mobi for'
         'Kindle.'
     ),
