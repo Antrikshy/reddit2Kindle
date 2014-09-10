@@ -13,7 +13,14 @@
   </style>
 </head>
 <body>
+{% if type_of_posts == 'top' %}
   <h1>Top {{post_count}} posts of the {{period}} from {{subreddit}}</h1>
+{% elif type_of_posts == 'hot' %}
+  <h1>Hottest {{post_count}} posts from {{subreddit}}</h1>
+{% else %}
+  {# A fallback, should never really get hit. #}
+  <h1>{{post_count}} posts from {{subreddit}}</h1>
+{% endif %}
   <h3>Compiled on {{now.strftime('%d, %b %Y')}}</h3>
 
   {% for subreddit_post in posts %}

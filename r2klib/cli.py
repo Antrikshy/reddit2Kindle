@@ -59,7 +59,8 @@ def from_cli():
             subreddit=subreddit,
             title=subreddit,
             posts=posts,
-            markdown=markdown2.markdown
+            markdown=markdown2.markdown,
+            type_of_posts='top' if args['top'] else 'hot'
         ).encode('utf-8'))
 
 
