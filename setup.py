@@ -1,9 +1,13 @@
-from distutils.core import setup
+#!/usr/bin/env python
+# encoding: utf-8
+from setuptools import setup
 
 setup(
     name='reddit2Kindle',
     scripts=['r2K'],
-    packages=['redditKindleLib'],
+    install_requires=[
+        'markdown2'
+    ],
     version='0.5.0',
     author='Antriksh Yadav',
     author_email='antrikshy@gmail.com',
