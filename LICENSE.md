@@ -1,4 +1,12 @@
+**reddit-to-Kindle:**  
 Copyright (c) 2014 Antriksh Yadav
+
+**python-markdown2:**  
+Copyright (c) 2012 Trent Mick
+Copyright (c) 2010 ActiveState Software Inc.
+
+
+Both packages are licensed under **The MIT License**:  
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
