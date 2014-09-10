@@ -4,10 +4,9 @@ import sys
 import datetime
 
 import praw
+import markdown2
 from docopt import docopt
-
-from redditKindleLib import utils
-
+from jinja2 import Environment, PackageLoader
 
 USAGE = """r2k.py
 
@@ -22,39 +21,42 @@ Options:
                         [default: 5]
     --period=<t>        Pick the top posts from "hour", "day", "week", "month"
                         or "year".
-                        [default: "day"]
+                        [default: all]
 """
 
 
 def from_cli():
     args = docopt(USAGE)
+
     max_posts = int(args['--posts'])
     period = args['--period']
     subreddit = args['<subreddit>']
 
-    head_text = "<h3 style='text-align:center;'>Created using <a href='http://antrikshy.com/projects/reddit2Kindle.htm'>reddit2Kindle</a>\
-                 by /u/Antrikshy</h3><p style='text-align:center;'>Download for your own use at Antrikshy.com/projects/reddit2Kindle.htm</p>\
-                 <mbp:pagebreak /></body>"
+    r = praw.Reddit('reddit-selftext-to-kindle converter')
+    sub = r.get_subreddit(subreddit)
 
-    book_title_text = "<h1 style='text-align:center;'>Top " + str(max_posts) + " posts of the " + period + " from /r/" + str(subreddit) + "</h1>"
+    posts = {
+        'all': sub.get_top_from_all,
+        'year': sub.get_top_from_year,
+        'month': sub.get_top_from_month,
+        'week': sub.get_top_from_week,
+        'day': sub.get_top_from_day,
+        'hour': sub.get_top_from_hour
+    }[period](limit=max_posts)
 
-    today = datetime.date.today()
-    date_time_text = "<h3 style='text-align:center;'>" + today.strftime("Compiled on %d, %b %Y") + "</h3>"
+    env = Environment(loader=PackageLoader('r2klib', 'templates'))
+    thread_template = env.get_template('thread.jinja')
 
-    r = praw.Reddit('reddit-selftext-to-Kindle converter by /u/Antrikshy')
-    pickedSubreddit = r.get_subreddit(subreddit)
-
-    dataForEntries = utils.getContent(pickedSubreddit, period, max_posts)
-    dataWithHTMLContent = utils.convertToHTML(dataForEntries)
-    finalEntriesInHTML = utils.convertToFinalHTML(dataWithHTMLContent)
-
-    finalHTML = "<body>" + book_title_text + date_time_text + "<br/><br/><br/>" + head_text + "</body>"
-    for readyEntry in finalEntriesInHTML:
-        finalHTML = finalHTML + readyEntry.HTML.encode("utf8") + "<mbp:pagebreak />"
-
-    destination = '{subreddit}.html'.format(subreddit=subreddit)
-    with open(destination, 'wb') as fout:
-        fout.write(finalHTML)
+    with open('{0}.html'.format(subreddit), 'wb') as fout:
+        fout.write(thread_template.render(
+            now=datetime.datetime.today(),
+            post_count=max_posts,
+            period=period,
+            subreddit=subreddit,
+            title=subreddit,
+            posts=posts,
+            markdown=markdown2.markdown
+        ).encode('utf-8'))
 
 
 if __name__ == '__main__':

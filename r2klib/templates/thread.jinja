@@ -1,0 +1,22 @@
+{% import 'post.jinja' as post with context %}
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>{{ title }}</title>
+  <style>
+  h1 {
+    text-align: center;
+  }
+  h3 {
+    text-align: center;
+  }
+  </style>
+</head>
+<body>
+  <h1>Top {{post_count}} posts of the {{period}} from {{subreddit}}</h1>
+  <h3>Compiled on {{now.strftime('%d, %b %Y')}}</h3>
+
+  {% for subreddit_post in posts %}
+  {{ post.post(subreddit_post) }}
+  {% endfor %}
+</body>
