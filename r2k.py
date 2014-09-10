@@ -1,66 +1,61 @@
-#!
-import praw, argparse, os, subprocess, datetime
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import sys
+import datetime
+
+import praw
+from docopt import docopt
+
 from redditKindleLib import utils
 
-# Gets arguments from command line
-parser = argparse.ArgumentParser(description="Compiles requested number of top posts from specified subreddit into a Kindle book")
-parser.add_argument('subreddit', help="Subreddit you want to scan", type=str)
-parser.add_argument('number', help="Number of top posts to scan", type=int)
-parser.add_argument('time', help="Top posts from hour/day/week/month/year", type=str)
-args = parser.parse_args()
 
-subreddit = args.subreddit
-number = args.number
-timePeriod = args.time
+USAGE = """r2k.py
 
-head_text = "<h3 style='text-align:center;'>Created using <a href='http://antrikshy.com/projects/reddit2Kindle.htm'>reddit2Kindle</a>\
-             by /u/Antrikshy</h3><p style='text-align:center;'>Download for your own use at Antrikshy.com/projects/reddit2Kindle.htm</p>\
-             <mbp:pagebreak /></body>"
+Compiles requested number of top posts from specified subreddit
+into a Kindle-formatted MOBI book.
 
-book_title_text = "<h1 style='text-align:center;'>Top " + str(number) + " posts of the " + timePeriod + " from /r/" + str(subreddit) + "</h1>"
+Usage:
+    r2k.py <subreddit> [--posts=<n>] [--period=<t>]
 
-today = datetime.date.today()
-date_time_text = "<h3 style='text-align:center;'>" + today.strftime("Compiled on %d, %b %Y") + "</h3>"
+Options:
+    --posts=<n>         The number of posts to include in the generated book.
+                        [default: 5]
+    --period=<t>        Pick the top posts from "hour", "day", "week", "month"
+                        or "year".
+                        [default: "day"]
+"""
 
-# In this case, we use PRAW without logging into reddit
-print "Connecting to reddit..."
-r = praw.Reddit('reddit-selftext-to-Kindle converter by /u/Antrikshy')
-print "Connected."
-pickedSubreddit = r.get_subreddit(subreddit)
 
-# Get reddit content
-dataForEntries = utils.getContent(pickedSubreddit, timePeriod, number)
-# Convert stories to HTML
-dataWithHTMLContent = utils.convertToHTML(dataForEntries)
-# Construct final HTML
-finalEntriesInHTML = utils.convertToFinalHTML(dataWithHTMLContent)
+def from_cli():
+    args = docopt(USAGE)
+    max_posts = int(args['--posts'])
+    period = args['--period']
+    subreddit = args['<subreddit>']
 
-finalHTML = "<body>" + book_title_text + date_time_text + "<br/><br/><br/>" + head_text + "</body>"
-for readyEntry in finalEntriesInHTML:
-    finalHTML = finalHTML + readyEntry.HTML.encode("utf8") + "<mbp:pagebreak />"
+    head_text = "<h3 style='text-align:center;'>Created using <a href='http://antrikshy.com/projects/reddit2Kindle.htm'>reddit2Kindle</a>\
+                 by /u/Antrikshy</h3><p style='text-align:center;'>Download for your own use at Antrikshy.com/projects/reddit2Kindle.htm</p>\
+                 <mbp:pagebreak /></body>"
 
-print "\nWriting HTML version of book..."
-# Write to 'r2K-result.htm' in the current directory
-fp = open(os.getcwd() + "/r2K-result.htm", "w")
-fp.write(finalHTML)
-fp.close()
-print "HTML version ready!\n"
+    book_title_text = "<h1 style='text-align:center;'>Top " + str(max_posts) + " posts of the " + period + " from /r/" + str(subreddit) + "</h1>"
 
-# Checks if KindleGen exists in current folder
-if os.path.isfile('./kindlegen'):
-    # Conversion by KindleGen
-    print "KindleGen detected. Converting to .mobi...\n"
-    subprocess.call(['./kindlegen', 'r2K-result.htm'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
-    
-    # Clean up HTML file and rename output
-    print "Cleaning up..."
-    subprocess.call(['rm', 'r2K-result.htm'])
-    subprocess.call(['mv', 'r2K-result.mobi', 'r2K_' + str(subreddit) + '_' + timePeriod + today.strftime("_%d-%m-%Y") + '.mobi'])
+    today = datetime.date.today()
+    date_time_text = "<h3 style='text-align:center;'>" + today.strftime("Compiled on %d, %b %Y") + "</h3>"
 
-    print "Done!"
-    print "Message /u/Antrikshy for help, bug reports or feedback."
+    r = praw.Reddit('reddit-selftext-to-Kindle converter by /u/Antrikshy')
+    pickedSubreddit = r.get_subreddit(subreddit)
 
-# If no KindleGen found, outputs HTML file
-else:
-    print "Find 'r2K-result.htm' in your current directory and convert it to .mobi using KindleGen from Amazon."
-    print "Place KindleGen in your current directory to automate conversion.\n"
+    dataForEntries = utils.getContent(pickedSubreddit, period, max_posts)
+    dataWithHTMLContent = utils.convertToHTML(dataForEntries)
+    finalEntriesInHTML = utils.convertToFinalHTML(dataWithHTMLContent)
+
+    finalHTML = "<body>" + book_title_text + date_time_text + "<br/><br/><br/>" + head_text + "</body>"
+    for readyEntry in finalEntriesInHTML:
+        finalHTML = finalHTML + readyEntry.HTML.encode("utf8") + "<mbp:pagebreak />"
+
+    destination = '{subreddit}.html'.format(subreddit=subreddit)
+    with open(destination, 'wb') as fout:
+        fout.write(finalHTML)
+
+
+if __name__ == '__main__':
+    sys.exit(from_cli())

@@ -7,7 +7,8 @@ setup(
     scripts=['r2K'],
     install_requires=[
         'markdown2',
-        'praw'
+        'praw',
+        'docopt'
     ],
     version='0.5.0',
     author='Antriksh Yadav',
