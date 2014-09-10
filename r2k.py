@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+#!
 import praw, argparse, os, subprocess, datetime
 from redditKindleLib import utils
 
