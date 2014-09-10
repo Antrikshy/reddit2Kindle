@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # encoding: utf-8
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='reddit2Kindle',
-    scripts=['r2K'],
+    scripts=['r2K.py'],
+    packages=find_packages(),
     install_requires=[
         'markdown2',
         'praw',
