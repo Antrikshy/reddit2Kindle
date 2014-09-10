@@ -14,7 +14,8 @@ Compiles requested number of top posts from specified subreddit
 into a Kindle-formatted MOBI book.
 
 Usage:
-    r2k.py <subreddit> [--posts=<n>] [--period=<t>]
+    r2k.py top <subreddit> [--posts=<n>] [--period=<t>]
+    r2k.py hot <subreddit> [--posts=<n>]
 
 Options:
     --posts=<n>         The number of posts to include in the generated book.
@@ -32,17 +33,20 @@ def from_cli():
     period = args['--period']
     subreddit = args['<subreddit>']
 
-    r = praw.Reddit('reddit-selftext-to-kindle converter')
+    r = praw.Reddit(user_agent='reddit-selftext-to-kindle converter')
     sub = r.get_subreddit(subreddit)
 
-    posts = {
-        'all': sub.get_top_from_all,
-        'year': sub.get_top_from_year,
-        'month': sub.get_top_from_month,
-        'week': sub.get_top_from_week,
-        'day': sub.get_top_from_day,
-        'hour': sub.get_top_from_hour
-    }[period](limit=max_posts)
+    if args['top']:
+        posts = {
+            'all': sub.get_top_from_all,
+            'year': sub.get_top_from_year,
+            'month': sub.get_top_from_month,
+            'week': sub.get_top_from_week,
+            'day': sub.get_top_from_day,
+            'hour': sub.get_top_from_hour
+        }[period](limit=max_posts)
+    elif args['hot']:
+        posts = sub.get_hot(limit=max_posts)
 
     env = Environment(loader=PackageLoader('r2klib', 'templates'))
     thread_template = env.get_template('thread.jinja')
