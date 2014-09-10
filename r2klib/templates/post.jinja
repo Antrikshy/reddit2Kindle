@@ -1,6 +1,8 @@
 {% macro post(p) %}
 <mbp:pagebreak>
 <h1>{{ p.title }}</h1>
-<em>Original post: <a href="http://redd.it/{{ p.id }}">here</a></em>
+<em>Original post: <a href="http://redd.it/{{ p.id }}">{{ p.id }}</a></em>
+<br />
+<em>by /u/{{ p.author }}</em>
 <p>{{ markdown(p.selftext) }}</p>
 {% endmacro %}
