@@ -9,7 +9,8 @@ setup(
     install_requires=[
         'markdown2',
         'praw',
-        'docopt'
+        'docopt',
+        'jinja2'
     ],
     version='0.5.0',
     author='Antriksh Yadav',
