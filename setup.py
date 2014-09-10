@@ -4,7 +4,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='reddit2Kindle',
-    scripts=['r2K.py'],
+    entry_points={
+        'console_scripts': [
+            'r2k = r2klib.cli:from_cli'
+        ]
+    },
     packages=find_packages(),
     install_requires=[
         'markdown2',
@@ -12,7 +16,7 @@ setup(
         'docopt',
         'jinja2'
     ],
-    version='0.5.0',
+    version='0.6.0',
     author='Antriksh Yadav',
     author_email='antrikshy@gmail.com',
     url='http://www.antrikshy.com/projects/reddit2Kindle.htm',
