@@ -1,7 +1,7 @@
 {% macro post(p) %}
 <mbp:pagebreak>
 <h1>{{ p.title }}</h1>
-<em>Original post: <a href="http://redd.it/{{ p.id }}">{{ p.id }}</a></em>
+<em>Original post: <a href="http://redd.it/{{ p.id }}">redd.it/{{ p.id }}</a></em>
 <br />
 {% if p.author != '[deleted]' %}
 <em>by <a href="http://reddit.com/u/{{ p.author }}">{{ p.author }}</a></em>
