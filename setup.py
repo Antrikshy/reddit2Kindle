@@ -25,9 +25,9 @@ setup(
         'period into a well-formatted Kindle book.'
     ),
     long_description=(
-        'See http://www.github.com/Antrikshy/reddit2kindle for instructions.'
-        'Requires KindleGen from Amazon to convert HTML result to .mobi for'
-        'Kindle.'
+        'See http://www.github.com/Antrikshy/reddit2kindle for instructions. '
+        'Requires ebook-convert from Calibre or KindleGen from Amazon '
+        'to convert HTML result to .mobi forKindle.'
     ),
     classifiers=[
         'Operating System :: OS Independent',
