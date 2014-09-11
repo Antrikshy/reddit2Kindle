@@ -98,7 +98,7 @@ def from_cli():
                 subprocess.call([
                     ebookconvert,
                     'r2k_result.htm',
-                    'r3k_result.mobi'
+                    'r2k_result.mobi'
                 ], stdout=devnull, stderr=subprocess.STDOUT)
                 converted = True
             else:
