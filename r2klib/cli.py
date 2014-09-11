@@ -8,6 +8,7 @@ import praw
 import markdown2
 from docopt import docopt
 from jinja2 import Environment, PackageLoader
+from distutils import spawn
 
 USAGE = """reddit2kindle
 
