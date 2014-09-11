@@ -67,22 +67,23 @@ def from_cli():
         ).encode('utf-8'))
 
     converted = False
-    if os.path.isfile('./kindlegen'):
-        subprocess.call([
-            './kindlegen',
-            'r2k_result.htm'
-        ], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
-        converted = True
-
-    if not converted:
-        ebookconvert = spawn.find_executable("ebook-convert")
-        if ebookconvert:
+    with open(os.devnull, 'w') as devnull:
+        if os.path.isfile('./kindlegen'):
             subprocess.call([
-                ebookconvert,
-                'r2k_result.htm',
-                'r2k_result.mobi'
-            ], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+                './kindlegen',
+                'r2k_result.htm'
+            ], stdout=devnull, stderr=subprocess.STDOUT)
             converted = True
+
+        if not converted:
+            ebookconvert = spawn.find_executable("ebook-convert")
+            if ebookconvert:
+                subprocess.call([
+                    ebookconvert,
+                    'r2k_result.htm',
+                    'r2k_result.mobi'
+                ], stdout=devnull, stderr=subprocess.STDOUT)
+                converted = True
 
     if converted:
         os.remove('r2k_result.htm')
