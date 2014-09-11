@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import logging
 import datetime
 import subprocess
 from distutils import spawn
@@ -17,8 +18,8 @@ Compiles requested number of top posts from specified subreddit
 into a Kindle-formatted MOBI book.
 
 Usage:
-    r2k.py top <subreddit> [--posts=<n>] [--period=<t>]
-    r2k.py hot <subreddit> [--posts=<n>]
+    r2k.py top <subreddit> [--posts=<n>] [--period=<t>] [options]
+    r2k.py hot <subreddit> [--posts=<n>] [options]
 
 Options:
     --posts=<n>         The number of posts to include in the generated book.
@@ -26,7 +27,10 @@ Options:
     --period=<t>        Pick the top posts from "hour", "day", "week", "month"
                         or "year".
                         [default: week]
+    --debug             Enable debug logging.
 """
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def from_cli():
@@ -36,6 +40,16 @@ def from_cli():
     period = args['--period']
     subreddit = args['<subreddit>']
 
+    # Setup logging.
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG if args['--debug'] else logging.INFO)
+    fmt = logging.Formatter('[%(asctime)s][%(levelname)s] %(message)s')
+    ch.setFormatter(fmt)
+    logger.addHandler(ch)
+
+    # This doesn't actually connect to Reddit. It creates a lazy proxy
+    # that doesn't get resolved until you actually query for some
+    # property.
     r = praw.Reddit(user_agent='reddit-selftext-to-kindle converter')
     sub = r.get_subreddit(subreddit)
 
@@ -54,6 +68,7 @@ def from_cli():
     env = Environment(loader=PackageLoader('r2klib', 'templates'))
     thread_template = env.get_template('thread.jinja')
 
+    logger.debug('generating html template...')
     with open('r2k_result.htm'.format(subreddit), 'wb') as fout:
         fout.write(thread_template.render(
             now=datetime.datetime.today(),
@@ -74,6 +89,8 @@ def from_cli():
                 'r2k_result.htm'
             ], stdout=devnull, stderr=subprocess.STDOUT)
             converted = True
+        else:
+            logger.info('could not locate kindlegen binary')
 
         if not converted:
             ebookconvert = spawn.find_executable("ebook-convert")
@@ -81,9 +98,11 @@ def from_cli():
                 subprocess.call([
                     ebookconvert,
                     'r2k_result.htm',
-                    'r2k_result.mobi'
+                    'r3k_result.mobi'
                 ], stdout=devnull, stderr=subprocess.STDOUT)
                 converted = True
+            else:
+                logger.info('could not locate ebook-convert binary')
 
     if converted:
         os.remove('r2k_result.htm')
@@ -92,6 +111,12 @@ def from_cli():
             period=period,
             dt=datetime.datetime.today().strftime('%d-%m-%Y')
         ))
+    else:
+        logger.warning(
+            'Could not locate kindlegen or ebook-convert for automatic'
+            ' MOBI creation. Either download these tools, or email the'
+            '.html to your kindle address.'
+        )
 
 if __name__ == '__main__':
     sys.exit(from_cli())
