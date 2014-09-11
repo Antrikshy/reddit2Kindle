@@ -9,6 +9,8 @@ Now you can read long text posts from [/r/talesfromtechsupport](http://reddit.co
 
 ![Sample](http://i.imgur.com/sw6iMYX.png)
 
+**Note: This README applies to the release version on PyPI. This repo contains an in-development version with several enhancements and completely revamped code (tons of props to TkTech for helping out). This notice will disappear when the release version matches this repo.**
+
 Installation
 ------------
 1. Install [Python](https://www.python.org/downloads) and [pip](http://pip.readthedocs.org/en/latest/installing.html).

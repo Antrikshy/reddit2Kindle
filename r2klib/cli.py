@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 import sys
 import datetime
+import subprocess
+from distutils import spawn
 
 import praw
 import markdown2
 from docopt import docopt
 from jinja2 import Environment, PackageLoader
 
-USAGE = """r2k.py
+USAGE = """reddit2kindle
 
 Compiles requested number of top posts from specified subreddit
 into a Kindle-formatted MOBI book.
@@ -19,10 +22,10 @@ Usage:
 
 Options:
     --posts=<n>         The number of posts to include in the generated book.
-                        [default: 5]
+                        [default: 10]
     --period=<t>        Pick the top posts from "hour", "day", "week", "month"
                         or "year".
-                        [default: all]
+                        [default: week]
 """
 
 
@@ -51,7 +54,7 @@ def from_cli():
     env = Environment(loader=PackageLoader('r2klib', 'templates'))
     thread_template = env.get_template('thread.jinja')
 
-    with open('{0}.html'.format(subreddit), 'wb') as fout:
+    with open('r2k_result.htm'.format(subreddit), 'wb') as fout:
         fout.write(thread_template.render(
             now=datetime.datetime.today(),
             post_count=max_posts,
@@ -63,6 +66,31 @@ def from_cli():
             type_of_posts='top' if args['top'] else 'hot'
         ).encode('utf-8'))
 
+    converted = False
+    if os.path.isfile('./kindlegen'):
+        subprocess.call([
+            './kindlegen',
+            'r2k_result.htm'
+        ], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+        converted = True
+
+    if not converted:
+        ebookconvert = spawn.find_executable("ebook-convert")
+        if ebookconvert:
+            subprocess.call([
+                ebookconvert,
+                'r2k_result.htm',
+                'r2k_result.mobi'
+            ], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+            converted = True
+
+    if converted:
+        os.remove('r2k_result.htm')
+        os.rename('r2k_result.mobi', 'r2k_{sub}_{period}_{dt}.mobi'.format(
+            sub=subreddit,
+            period=period,
+            dt=datetime.datetime.today().strftime('%d-%m-%Y')
+        ))
 
 if __name__ == '__main__':
     sys.exit(from_cli())
