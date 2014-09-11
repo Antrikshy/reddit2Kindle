@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import praw, argparse, os, subprocess, datetime
+from distutils import spawn
 from redditKindleLib import utils
 
 # Gets arguments from command line
@@ -47,21 +48,32 @@ fp.write(finalHTML)
 fp.close()
 print "HTML version ready!\n"
 
-# Checks if KindleGen exists in current folder
+converted = False
+# First, check if KindleGen exists in current folder
 if os.path.isfile('./kindlegen'):
     # Conversion by KindleGen
     print "KindleGen detected. Converting to .mobi...\n"
     subprocess.call(['./kindlegen', 'r2K-result.htm'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
-    
+    converted = True
+
+if not converted:
+    # Find if ebook-convert exists in PATH
+    ebookconvert = spawn.find_executable("ebook-convert")
+    if ebookconvert:
+        # Conversion by ebook-convert
+        print "ebook-convert detected. Converting to .mobi...\n"
+        subprocess.call([ebookconvert, 'r2K-result.htm', 'r2K-result.mobi'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+        converted = True
+
+if converted:
     # Clean up HTML file and rename output
     print "Cleaning up..."
     subprocess.call(['rm', 'r2K-result.htm'])
     subprocess.call(['mv', 'r2K-result.mobi', 'r2K_' + str(subreddit) + '_' + timePeriod + today.strftime("_%d-%m-%Y") + '.mobi'])
-
-    print "Done!"
-    print "Message /u/Antrikshy for help, bug reports or feedback."
-
-# If no KindleGen found, outputs HTML file
 else:
-    print "Find 'r2K-result.htm' in your current directory and convert it to .mobi using KindleGen from Amazon."
-    print "Place KindleGen in your current directory to automate conversion.\n"
+    # If no convert tool found, outputs HTML file
+    print "Find 'r2K-result.htm' in your current directory and convert it to .mobi using ebook-convert from Calibre or KindleGen from Amazon."
+    print "Install Calibre or place KindleGen in your current directory to automate conversion.\n"
+
+print "Done!"
+print "Message /u/Antrikshy for help, bug reports or feedback."
