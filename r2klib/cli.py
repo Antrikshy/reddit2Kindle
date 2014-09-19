@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys, os
+import os
+import sys
+import logging
 import datetime
 import subprocess
+from distutils import spawn
 
 import praw
 import markdown2
@@ -16,7 +19,8 @@ Compiles requested number of top posts from specified subreddit
 into a Kindle-formatted MOBI book.
 
 Usage:
-    r2k <subreddit> [--posts=<n>] [--period=<t>]
+    r2k.py top <subreddit> [--posts=<n>] [--period=<t>] [options]
+    r2k.py hot <subreddit> [--posts=<n>] [options]
 
 Options:
     --posts=<n>         The number of posts to include in the generated book.
@@ -24,7 +28,10 @@ Options:
     --period=<t>        Pick the top posts from "hour", "day", "week", "month"
                         or "year".
                         [default: week]
+    --debug             Enable debug logging.
 """
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def from_cli():
@@ -34,24 +41,36 @@ def from_cli():
     period = args['--period']
     subreddit = args['<subreddit>']
 
-    print "\nConnecting to reddit..."
-    r = praw.Reddit('reddit-selftext-to-kindle converter')
+    # Setup logging.
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG if args['--debug'] else logging.INFO)
+    fmt = logging.Formatter('[%(asctime)s][%(levelname)s] %(message)s')
+    ch.setFormatter(fmt)
+    logger.addHandler(ch)
+
+    # This doesn't actually connect to Reddit. It creates a lazy proxy
+    # that doesn't get resolved until you actually query for some
+    # property.
+    r = praw.Reddit(user_agent='reddit-selftext-to-kindle converter')
     sub = r.get_subreddit(subreddit)
 
-    print "Getting posts...\n"
-    posts = {
-        # 'all': sub.get_top_from_all,
-        'year': sub.get_top_from_year,
-        'month': sub.get_top_from_month,
-        'week': sub.get_top_from_week,
-        'day': sub.get_top_from_day,
-        'hour': sub.get_top_from_hour
-    }[period](limit=max_posts)
+    if args['top']:
+        posts = {
+            'all': sub.get_top_from_all,
+            'year': sub.get_top_from_year,
+            'month': sub.get_top_from_month,
+            'week': sub.get_top_from_week,
+            'day': sub.get_top_from_day,
+            'hour': sub.get_top_from_hour
+        }[period](limit=max_posts)
+    elif args['hot']:
+        posts = sub.get_hot(limit=max_posts)
 
     env = Environment(loader=PackageLoader('r2klib', 'templates'))
     thread_template = env.get_template('thread.jinja')
 
-    with open('r2k-result.htm'.format(subreddit), 'wb') as fout:
+    logger.debug('generating html template...')
+    with open('r2k_result.htm'.format(subreddit), 'wb') as fout:
         fout.write(thread_template.render(
             now=datetime.datetime.today(),
             post_count=max_posts,
@@ -59,38 +78,46 @@ def from_cli():
             subreddit=subreddit,
             title=subreddit,
             posts=posts,
-            markdown=markdown2.markdown
+            markdown=markdown2.markdown,
+            type_of_posts='top' if args['top'] else 'hot'
         ).encode('utf-8'))
 
     converted = False
-    # First, check if KindleGen exists in current folder
-    if os.path.isfile('./kindlegen'):
-        # Conversion by KindleGen
-        print "KindleGen detected. Converting to .mobi...\n"
-        subprocess.call(['./kindlegen', 'r2k-result.htm'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
-        converted = True
-
-    if not converted:
-        # Find if ebook-convert exists in PATH
-        ebookconvert = spawn.find_executable("ebook-convert")
-        if ebookconvert:
-            # Conversion by ebook-convert
-            print "ebook-convert detected. Converting to .mobi...\n"
-            subprocess.call([ebookconvert, 'r2k-result.htm', 'r2k-result.mobi'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+    with open(os.devnull, 'w') as devnull:
+        if os.path.isfile('./kindlegen'):
+            subprocess.call([
+                './kindlegen',
+                'r2k_result.htm'
+            ], stdout=devnull, stderr=subprocess.STDOUT)
             converted = True
+        else:
+            logger.info('could not locate kindlegen binary')
+
+        if not converted:
+            ebookconvert = spawn.find_executable("ebook-convert")
+            if ebookconvert:
+                subprocess.call([
+                    ebookconvert,
+                    'r2k_result.htm',
+                    'r2k_result.mobi'
+                ], stdout=devnull, stderr=subprocess.STDOUT)
+                converted = True
+            else:
+                logger.info('could not locate ebook-convert binary')
 
     if converted:
-        # Clean up HTML file and rename output
-        print "Cleaning up..."
-        os.remove('r2k-result.htm')
-        os.rename('r2k-result.mobi', 'r2k_' + str(subreddit) + '_' + period + datetime.datetime.today().strftime("_%d-%m-%Y") + '.mobi')
+        os.remove('r2k_result.htm')
+        os.rename('r2k_result.mobi', 'r2k_{sub}_{period}_{dt}.mobi'.format(
+            sub=subreddit,
+            period=period,
+            dt=datetime.datetime.today().strftime('%d-%m-%Y')
+        ))
     else:
-        # If no convert tool found, outputs HTML file
-        print "\nFind 'r2k-result.htm' in your current directory and convert it to .mobi using ebook-convert from Calibre or KindleGen from Amazon."
-        print "Install Calibre or place KindleGen in your current directory to automate conversion.\n"
-
-    print "\nDone!"
-    print "Message /u/Antrikshy for help, bug reports or feedback.\n"
+        logger.warning(
+            'Could not locate kindlegen or ebook-convert for automatic'
+            ' MOBI creation. Either download these tools, or email the'
+            '.html to your kindle address.'
+        )
 
 if __name__ == '__main__':
     sys.exit(from_cli())
