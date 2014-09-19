@@ -3,6 +3,8 @@ reddit2Kindle (beta)
 
 [![Flattr reddit2Kindle](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=Antrikshy&url=github.com/Antrikshy/reddit2Kindle&title=reddit2Kindle&language=English&tags=github&category=software)
 
+Contact: [@Antrikshy](http://twitter.com/Antrikshy)
+
 Conveniently compiles text posts from reddit into a .mobi book, readable by all Kindle devices and apps.
 
 Now you can read long text posts from [/r/talesfromtechsupport](http://reddit.com/r/talesfromtechsupport), [/r/nosleep](http://reddit.com/r/nosleep), [/r/tifu](http://reddit.com/r/tifu) or a story-based subreddit of your choice with the comfort of your e-reader. Here's an example of what the auto-generated books look like:
@@ -49,6 +51,8 @@ Contributing
 If you cannot code, you can create a new issue in this project and I should get back to you quickly.
 
 Contributing code is super easy. Simply fork, clone and edit the r2K script and/or code in the `/redditKindleLib` folder using your favorite text editor. Test using `python ./r2K [args]`. Once you're done, just commit and send me a pull request. Don't worry about `setup.py`, version numbers and other stuff. I'll handle that.
+
+If you have a quick question for me, contact me [@Antrikshy](http://twitter.com/Antrikshy).
 
 **Things to do:**
 
